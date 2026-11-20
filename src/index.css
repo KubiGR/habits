@@ -170,8 +170,35 @@ button {
 }
 
 .masthead .date {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
   margin-top: 8px;
   color: var(--ink-2);
+}
+
+.moon {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  color: var(--ink-3);
+}
+
+.moon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.moon circle {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1;
+}
+
+.moon path {
+  fill: var(--ink-2);
 }
 
 .tabs {
@@ -1285,6 +1312,9 @@ button {
   }
   .title {
     font-size: 44px;
+  }
+  .moon-more {
+    display: none;
   }
   .stamp {
     right: 0;
