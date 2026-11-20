@@ -1,11 +1,10 @@
 import { ErrorBoundary } from './components/ErrorBoundary'
-import { Tracker } from './components/Tracker'
-import { httpBackend } from './lib/http'
+import { Gate } from './components/Gate'
 
 export default function App() {
   return (
     <ErrorBoundary>
-      <Tracker backend={httpBackend} />
+      <Gate />
     </ErrorBoundary>
   )
 }

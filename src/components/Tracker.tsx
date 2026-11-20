@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { applyAppearance, nextAppearance, readAppearance } from '../lib/appearance'
-import type { Backend, Level } from '../lib/data'
+import type { Backend, Level, Me } from '../lib/data'
+import { SIGN_OUT } from '../lib/http'
 import { ordered, type Schedule } from '../lib/schedule'
 import { setSoundEnabled } from '../lib/sound'
 import { useRoute } from '../lib/useRoute'
 import { useStore } from '../lib/useStore'
 import { useToday } from '../lib/useToday'
 import { Masthead } from './Masthead'
+import { People } from './People'
 import { RecentGrid } from './RecentGrid'
 import { Stats } from './Stats'
 import { Today } from './Today'
@@ -21,7 +23,14 @@ function readSoundPref() {
   }
 }
 
-export function Tracker({ backend }: { backend: Backend }) {
+interface Props {
+  backend: Backend
+  me: Me
+  /** After approving or blocking someone, so the waiting count updates. */
+  onPeopleChange: () => void
+}
+
+export function Tracker({ backend, me, onPeopleChange }: Props) {
   const today = useToday()
   const { data, error, dismissError, dispatch, reload } = useStore(backend)
   const [sound, setSound] = useState(readSoundPref)
@@ -89,8 +98,10 @@ export function Tracker({ backend }: { backend: Backend }) {
 
   return (
     <main className="page">
-      <Masthead today={today} route={route} />
-      {route === 'stats' ? (
+      <Masthead today={today} route={route} admin={me.admin} waiting={me.waiting} />
+      {route === 'people' && me.admin ? (
+        <People me={me.email} onChange={onPeopleChange} />
+      ) : route === 'stats' ? (
         <Stats habits={habits} checks={checks} today={today} />
       ) : (
         <>
@@ -109,7 +120,8 @@ export function Tracker({ backend }: { backend: Backend }) {
       )}
 
       <footer className="foot">
-        <span>Saved to Postgres</span>
+        <span className="who">{me.email}</span>
+        <a href={SIGN_OUT}>Sign out</a>
         <span className="spacer" />
         {route === 'today' && <span className="hint">1–9 check · ⇧ half · ← → week</span>}
         <button onClick={() => setAppearance((a) => nextAppearance[a])} title="Auto follows your system setting">

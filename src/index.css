@@ -104,6 +104,35 @@ button {
   color: var(--ink-2);
 }
 
+/* Signed in but not approved (yet). */
+.gate {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+  gap: 16px;
+}
+
+.gate .title {
+  color: var(--ink);
+}
+
+.gate p {
+  margin: 0;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.gate strong {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.gate a {
+  color: var(--ink-3);
+  font-size: 12px;
+}
+
 .page {
   max-width: 1040px;
   margin: 0 auto;
@@ -161,6 +190,19 @@ button {
 
 .tabs a:hover {
   color: var(--ink);
+}
+
+.tabs .badge {
+  display: inline-block;
+  min-width: 16px;
+  margin-left: 6px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--paper);
+  font-size: 10px;
+  line-height: 16px;
+  text-align: center;
 }
 
 .tabs a.active {
@@ -989,8 +1031,69 @@ button {
   flex: 1;
 }
 
-.foot button:hover {
+.foot a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.foot button:hover,
+.foot a:hover {
   color: var(--ink);
+}
+
+/* ── People (owner only) ──────────────────── */
+
+.people {
+  max-width: 640px;
+}
+
+.people-note {
+  margin: 0 0 16px;
+  color: var(--ink-3);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.people-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.people-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 14px 0;
+  border-bottom: 1px dashed var(--line);
+}
+
+.people-list .email {
+  font-family: var(--serif);
+  font-size: 20px;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.people-list .meta {
+  margin-top: 2px;
+  color: var(--ink-3);
+  font-size: 11px;
+}
+
+.people-list .pending .meta {
+  color: var(--accent);
+}
+
+.people-list .blocked .email {
+  color: var(--ink-3);
+  text-decoration: line-through;
+}
+
+.people-list .editor-actions {
+  padding-top: 0;
 }
 
 .toast {

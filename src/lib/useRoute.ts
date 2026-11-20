@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 
-export type Route = 'today' | 'stats'
+export type Route = 'today' | 'stats' | 'people'
 
 // Hash routes need no server support, so they work the same from Vite, the API server and an installed app.
-const current = (): Route => (location.hash === '#/stats' ? 'stats' : 'today')
+const current = (): Route => (location.hash === '#/stats' ? 'stats' : location.hash === '#/people' ? 'people' : 'today')
 
 export function useRoute() {
   const [route, setRoute] = useState(current)

@@ -11,7 +11,7 @@ export type Schedule =
 export interface Habit {
   id: string
   name: string
-  /** Order within its time of day. */
+  /** Order in the list. */
   position: number
   createdAt: string
   schedule: Schedule
@@ -32,6 +32,27 @@ export type Op =
   | { type: 'setCheck'; habitId: string; day: string; level: Level | null }
   /** Every habit id, in the new order; positions become their indexes. */
   | { type: 'reorder'; ids: string[] }
+
+/** Everyone who signs in starts as pending; the owner approves (or blocks) them. */
+export type Status = 'pending' | 'approved' | 'blocked'
+
+/** GET /api/me */
+export interface Me {
+  email: string
+  status: Status
+  /** The owner, who approves people. */
+  admin: boolean
+  /** For the owner: how many people are waiting. */
+  waiting: number
+}
+
+/** GET /api/people (owner only) */
+export interface Person {
+  email: string
+  status: Status
+  createdAt: string
+  habits: number
+}
 
 /** Where data lives. Every change goes through `write` as an Op. */
 export interface Backend {

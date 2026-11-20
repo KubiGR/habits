@@ -1,11 +1,12 @@
-import type { Backend, Data } from './data'
+import type { Backend, Data, Me, Person, Status } from './data'
 
 const RELOADED_AT = 'habits:signin-reload'
 
 /**
  * Behind Cloudflare Access, an expired login answers API calls with a redirect to the login page
- * (which fetch can't follow cross-origin) or a 401/403; our own server sends neither. Reloading the
- * page lets the browser do the login. At most once a minute, so a lasting failure can't loop.
+ * (which fetch can't follow cross-origin) or a 401/403; our own server sends 401 only when a request
+ * has no valid login. Reloading the page lets the browser sign in. At most once a minute, so a
+ * lasting failure can't loop.
  */
 function signedOut(): never {
   let last = 0
@@ -30,12 +31,30 @@ async function request(path: string, init?: RequestInit) {
   return res
 }
 
+const json = { 'content-type': 'application/json' }
+
+/** Cloudflare Access's own sign-out page; it clears the login for this app. */
+export const SIGN_OUT = '/cdn-cgi/access/logout'
+
+/** Who is signed in, and approving other people. */
+export const account = {
+  async me() {
+    return (await (await request('/api/me')).json()) as Me
+  },
+  async people() {
+    return (await (await request('/api/people')).json()) as Person[]
+  },
+  async setStatus(email: string, status: Exclude<Status, 'pending'>) {
+    await request('/api/people', { method: 'POST', headers: json, body: JSON.stringify({ email, status }) })
+  },
+}
+
 /** Talks to the local API server (server/index.ts), which stores everything in Postgres. */
 export const httpBackend: Backend = {
   async load() {
     return (await (await request('/api/data')).json()) as Data
   },
   async write(op) {
-    await request('/api/ops', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(op) })
+    await request('/api/ops', { method: 'POST', headers: json, body: JSON.stringify(op) })
   },
 }

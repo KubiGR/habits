@@ -33,10 +33,16 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: postgres://habits:${POSTGRES_PASSWORD:-habits}@db:5432/habits
-    # On the LAN. There's no login, so don't forward this port on the router; for access from
-    # outside, put it behind a Cloudflare Tunnel hostname with Access in front.
+      # Approves everyone else (the People tab). Habits from before there were people belong to them.
+      OWNER_EMAIL: adranidisb@gmail.com
+      # habits.dranidis.com is behind Cloudflare Access, which signs every request; the server
+      # checks the signature against these, so it knows who is asking. Neither is secret.
+      ACCESS_TEAM_DOMAIN: dranidis.cloudflareaccess.com
+      ACCESS_AUD: ea98eb0a0f37e5fa8c2d9179693b4fc1c773dcabfb9aaae011096232ffbc6c21
+    # Only on the server itself, where the Cloudflare tunnel picks it up. A request that skipped
+    # Access would be refused anyway (no signed login), so this just keeps the LAN tidy.
     ports:
-      - '${APP_PORT:-3090}:3000'
+      - '127.0.0.1:${APP_PORT:-3090}:3000'
     networks: [habits]
 
 volumes:
