@@ -33,7 +33,7 @@ The server only listens on `127.0.0.1`. To open it from your phone or another co
 
 ### Deploying to the home server
 
-Deployed with [Komodo](https://komo.do) on `kubi-server` (UI at http://192.168.0.2:9120). The `habits` stack clones this repo, builds the image from `Dockerfile` and runs `deploy/compose.yaml`. The app is at http://192.168.0.2:3090.
+Deployed with [Komodo](https://komo.do) on `kubi-server` (UI at http://192.168.0.2:9120). The `habits` stack clones this repo, builds the image from `Dockerfile` and runs `deploy/compose.yaml`. The app is at https://habits.dranidis.com (behind Cloudflare Access) and http://192.168.0.2:3090 on the LAN.
 
 `npm run deploy` pushes, then has Komodo redeploy (`deploy/trigger-komodo.sh` sends the push webhook from the server itself, since GitHub can't reach Komodo on the LAN). Or press **Deploy** on the stack in Komodo. Data stays in the `habits_habits-pgdata` volume across deploys.
 
@@ -41,22 +41,16 @@ Backup on the server: `docker exec habits-db-1 pg_dump -U habits habits > habits
 
 ### Installing on your phone
 
-It's a web app you can add to your home screen, where it opens full-screen with its own icon.
+Open https://habits.dranidis.com and sign in (Cloudflare Access, `adranidisb@gmail.com` only; the login lasts 30 days). Then:
 
-- **iPhone**: open it in Safari, then Share → **Add to Home Screen**. Works over plain `http://` on your network.
-- **Android**: Chrome offers **Install app** only over HTTPS. Plain `http://` on your network still works as a home-screen shortcut (⋮ → Add to Home screen), just without the full app treatment.
+- **iPhone**: Safari → Share → **Add to Home Screen**.
+- **Android**: Chrome → ⋮ → **Install app**.
 
-For HTTPS without certificates, [Tailscale](https://tailscale.com) is the easy route: install it on this machine and your phone, run `npm run build && npm start`, then `tailscale serve 3001`. That gives you `https://<machine>.<tailnet>.ts.net`, reachable only from your own devices (which also solves the no-login problem), and with HTTPS the app also opens offline. Your data still needs the server to load, so check-ins need a connection.
+It opens full-screen with its own icon, and offline it still opens (check-ins need a connection). When the login expires, the app reloads to the sign-in page by itself.
+
+On the home network it's also at http://192.168.0.2:3090, without the login.
 
 The service worker (`public/sw.js`) only runs in production builds, never under `npm run dev`. The icons in `public/` are rendered from `icons/icon.svg`: `qlmanage -t -s 512 -o . icons/icon.svg`, then `sips -z 192 192` for the smaller sizes.
-
-### Backups
-
-```sh
-docker compose exec -T db pg_dump -U habits habits > habits-backup.sql
-```
-
-The **Export** button in the footer also downloads everything as JSON.
 
 ## Code map
 
