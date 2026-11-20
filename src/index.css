@@ -229,15 +229,6 @@ button {
   padding: 0;
 }
 
-.group-label {
-  margin: 22px 0 0;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-}
-
 .habit {
   position: relative;
   display: grid;
@@ -250,11 +241,11 @@ button {
 }
 
 /* While dragging, the other rows glide out of the way; the held row follows the pointer exactly. */
-.groups.dragging .habit {
+.habits.dragging .habit {
   transition: transform 0.2s ease;
 }
 
-.groups.dragging .habit.lifted {
+.habits.dragging .habit.lifted {
   z-index: 2;
   transition: none;
   border-bottom-color: transparent;
@@ -262,7 +253,7 @@ button {
   border-radius: 8px;
 }
 
-.groups.dragging {
+.habits.dragging {
   user-select: none;
   -webkit-user-select: none;
 }
@@ -405,7 +396,33 @@ button {
   color: var(--ink);
 }
 
-/* ── Habit editor ─────────────────────────── */
+/* ── Habit editor and the add-habit options ─ */
+
+/* Lines up under the name, past the handle and checkbox columns. */
+.composer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 0 18px 76px;
+  border-bottom: 1px dashed var(--line);
+  animation: composer-in 0.18s ease-out;
+}
+
+/* Under the name it's obviously the schedule; the label would only push the options onto two lines. */
+.composer .field .label {
+  display: none;
+}
+
+.adder:has(.composer) .add {
+  border-bottom-color: transparent;
+}
+
+@keyframes composer-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
 
 .editor {
   display: flex;
@@ -1144,6 +1161,9 @@ button {
 }
 
 @media (max-width: 640px) {
+  .composer {
+    padding-left: 0;
+  }
   .page {
     /* Installed on a phone, keep clear of the notch and the home indicator. */
     padding: max(40px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))

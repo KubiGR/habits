@@ -18,5 +18,5 @@ alter table checks add column if not exists level text not null default 'done' c
 
 -- Shape is validated by the API: {"kind":"daily"} | {"kind":"days","days":[0-6…]} | {"kind":"weekly","times":1-7}
 alter table habits add column if not exists schedule jsonb not null default '{"kind":"daily"}';
-alter table habits add column if not exists time_of_day text not null default 'anytime'
-  check (time_of_day in ('morning', 'afternoon', 'evening', 'anytime'));
+-- Time of day was tried and removed.
+alter table habits drop column if exists time_of_day;

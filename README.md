@@ -3,9 +3,8 @@
 A minimal habit tracker, inspired by the Atomic Habits tracker and the Theme System Journal.
 
 - **Today**: check off habits. Each check plays the next note up a scale, and finishing the day stamps it done. Streaks show on the right, and a habit you missed last time it was due is flagged "never miss twice".
-- **Schedules**: each habit runs every day, on chosen weekdays (say Mon/Wed/Fri), or N times a week. Rest days don't break a streak, and only what's due counts toward finishing the day. Weekly habits show "2 of 3 this week" and count their streak in weeks (`4w`). Set it with **Edit** on a habit.
-- **Grouping**: give a habit a time of day (Morning, Afternoon, Evening or Anytime) and Today groups them in that order. Labels appear once anything isn't "Anytime".
-- **Reorder**: drag a habit by its handle (the number on the left turns into ⠿ on hover), or focus the handle and press `↑` `↓`. Order is within a time-of-day group.
+- **Schedules**: each habit runs every day, on chosen weekdays (say Mon/Wed/Fri), or N times a week. Rest days don't break a streak, and only what's due counts toward finishing the day. Weekly habits show "2 of 3 this week" and count their streak in weeks (`4w`). Pick it as you add a habit (the options open once you start typing: Every day, Weekdays, Weekends, Pick days, Times a week), or later with **Edit**.
+- **Reorder**: drag a habit by its handle (the number on the left turns into ⠿ on hover), or focus the handle and press `↑` `↓`.
 - **Stats** (tab at the top): check-ins, perfect days and longest perfect run, a year heatmap, and per habit its streak and best, completion over the last 30 days and all time, which weekdays you tend to do it, and its own heatmap.
 - **Last 25 days**: a rolling grid, like GitHub's activity graph. Every habit × every recent day, with a few empty days on the right so today isn't against the edge. Click any past day to fill it in late. Days where every habit was done get a dot. `←` `→` step a week at a time.
 - **Half checks**: for days you did part of a habit. On a phone, long-press. On a computer, Shift+click, right-click, the ½ button, or `Shift`+`1`–`9`. A half keeps the streak going (showing up counts) and adds ½ to the totals, but doesn't complete the day or count as a perfect day.
@@ -65,7 +64,7 @@ The **Export** button in the footer also downloads everything as JSON.
 - `src/lib/data.ts`: data types and the `Op` change format, plus the `apply(data, op)` reducer used for optimistic updates
 - `src/lib/useStore.ts`: optimistic updates, writes sent one at a time in order, reload when the tab regains focus
 - `src/lib/http.ts`: the frontend's client for the API
-- `src/lib/schedule.ts`: schedules, time-of-day order and labels
+- `src/lib/schedule.ts`: schedules and their descriptions
 - `src/lib/stats.ts`: streaks, "never miss twice", completion rates, perfect days. All the schedule-aware counting lives here.
 - `src/lib/sound.ts`: Web Audio plucks, no audio files
-- `src/components/`: `Tracker` (top level), `Masthead`, `Today` (groups, drag to reorder), `HabitRow` (row and editor), `RecentGrid`, `Stats`, `Heatmap`
+- `src/components/`: `Tracker` (top level), `Masthead`, `Today` (drag to reorder), `HabitRow` (row and editor), `AddHabit`, `ScheduleField` (the schedule picker both use), `RecentGrid`, `Stats`, `Heatmap`

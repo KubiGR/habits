@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { applyAppearance, nextAppearance, readAppearance } from '../lib/appearance'
 import type { Backend, Level } from '../lib/data'
-import { ordered } from '../lib/schedule'
+import { ordered, type Schedule } from '../lib/schedule'
 import { setSoundEnabled } from '../lib/sound'
 import { useRoute } from '../lib/useRoute'
 import { useStore } from '../lib/useStore'
@@ -64,7 +64,7 @@ export function Tracker({ backend }: { backend: Backend }) {
   const toggle = (habitId: string, day: string, level: Level | null) =>
     dispatch({ type: 'setCheck', habitId, day, level })
 
-  function addHabit(name: string) {
+  function addHabit(name: string, schedule: Schedule) {
     const position = habits.reduce((max, h) => Math.max(max, h.position), -1) + 1
     dispatch({
       type: 'saveHabit',
@@ -73,8 +73,7 @@ export function Tracker({ backend }: { backend: Backend }) {
         name,
         position,
         createdAt: new Date().toISOString(),
-        schedule: { kind: 'daily' },
-        timeOfDay: 'anytime',
+        schedule,
       },
     })
   }

@@ -7,7 +7,7 @@ import { readFile } from 'node:fs/promises'
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http'
 import { extname, join, normalize } from 'node:path'
 import postgres from 'postgres'
-import type { Data, Level, Op, Schedule, TimeOfDay } from '../src/lib/data.ts'
+import type { Data, Level, Op, Schedule } from '../src/lib/data.ts'
 
 const PORT = Number(process.env.PORT ?? 3001)
 const HOST = process.env.HOST ?? '127.0.0.1'
@@ -20,8 +20,8 @@ await sql.unsafe(await readFile(join(import.meta.dirname, 'schema.sql'), 'utf8')
 
 async function load(): Promise<Data> {
   const [habits, checks] = await Promise.all([
-    sql<{ id: string; name: string; position: number; created_at: Date; schedule: Schedule; time_of_day: TimeOfDay }[]>`
-      select id, name, position, created_at, schedule, time_of_day from habits order by position, id`,
+    sql<{ id: string; name: string; position: number; created_at: Date; schedule: Schedule }[]>`
+      select id, name, position, created_at, schedule from habits order by position, id`,
     sql<{ habit_id: string; day: string; level: Level }[]>`select habit_id, day::text, level from checks`,
   ])
   return {
@@ -31,7 +31,6 @@ async function load(): Promise<Data> {
       position: r.position,
       createdAt: r.created_at.toISOString(),
       schedule: r.schedule,
-      timeOfDay: r.time_of_day,
     })),
     checks: Object.fromEntries(checks.map((r) => [`${r.habit_id}:${r.day}`, r.level])),
   }
@@ -42,12 +41,10 @@ async function write(op: Op) {
     case 'saveHabit': {
       const h = op.habit
       await sql`
-        insert into habits (id, name, position, created_at, schedule, time_of_day)
-        values (${h.id}, ${h.name}, ${h.position}, ${h.createdAt}::timestamptz,
-                ${sql.json(h.schedule)}, ${h.timeOfDay})
+        insert into habits (id, name, position, created_at, schedule)
+        values (${h.id}, ${h.name}, ${h.position}, ${h.createdAt}::timestamptz, ${sql.json(h.schedule)})
         on conflict (id) do update set
-          name = excluded.name, position = excluded.position,
-          schedule = excluded.schedule, time_of_day = excluded.time_of_day`
+          name = excluded.name, position = excluded.position, schedule = excluded.schedule`
       return
     }
     case 'reorder':
@@ -71,7 +68,6 @@ async function write(op: Op) {
 const isStr = (v: unknown): v is string => typeof v === 'string'
 const isDay = (v: unknown) => isStr(v) && /^\d{4}-\d{2}-\d{2}$/.test(v)
 const isUuid = (v: unknown) => isStr(v) && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v)
-const TIMES: TimeOfDay[] = ['morning', 'afternoon', 'evening', 'anytime']
 
 function isSchedule(v: unknown): v is Schedule {
   if (typeof v !== 'object' || v === null) return false
@@ -103,8 +99,7 @@ function isOp(v: unknown): v is Op {
         isStr(h.name) &&
         Number.isInteger(h.position) &&
         isStr(h.createdAt) &&
-        isSchedule(h.schedule) &&
-        TIMES.includes(h.timeOfDay as TimeOfDay)
+        isSchedule(h.schedule)
       )
     }
     case 'reorder':

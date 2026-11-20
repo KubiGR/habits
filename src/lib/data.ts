@@ -7,7 +7,6 @@ export type Schedule =
   /** Any days, this many times per Monday-to-Sunday week. */
   | { kind: 'weekly'; times: number }
 
-export type TimeOfDay = 'morning' | 'afternoon' | 'evening' | 'anytime'
 
 export interface Habit {
   id: string
@@ -16,7 +15,6 @@ export interface Habit {
   position: number
   createdAt: string
   schedule: Schedule
-  timeOfDay: TimeOfDay
 }
 
 /** A full check, or "did part of it". */

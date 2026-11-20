@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { checkId, type Data, type Habit } from '../lib/data'
 import { addDays, fromKey, toKey } from '../lib/dates'
-import { TIME_LABEL, WEEK_ORDER, dayName, describe, isOnDay } from '../lib/schedule'
+import { WEEK_ORDER, dayName, describe, isOnDay } from '../lib/schedule'
 import {
   bestStreak,
   completion,
@@ -104,7 +104,6 @@ function HabitStats({ habit: h, checks, start, today }: { habit: Habit; checks: 
         <h3>{h.name}</h3>
         <span className="meta">
           {describe(h.schedule)}
-          {h.timeOfDay !== 'anytime' && ` · ${TIME_LABEL[h.timeOfDay]}`}
         </span>
       </header>
 
