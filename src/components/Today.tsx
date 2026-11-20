@@ -156,15 +156,15 @@ export function Today({ habits, checks, today, onToggle, onAdd, onSave, onDelete
             </span>
           </div>
         )}
+        {allDone && (
+          <div className={cls('stamp', celebrated === today && 'animate')} aria-hidden="true">
+            All
+            <br />
+            done
+          </div>
+        )}
       </div>
 
-      {allDone && (
-        <div className={cls('stamp', celebrated === today && 'animate')} aria-hidden="true">
-          All
-          <br />
-          done
-        </div>
-      )}
       {habits.length > 0 && due.length === 0 && <p className="rest-note">Nothing due today. Rest is part of it.</p>}
 
       <ul className={cls('habits', drag && 'dragging')}>

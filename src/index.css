@@ -670,13 +670,19 @@ button {
   color: var(--ink);
 }
 
-/* Takes the progress bar's place in the section head once the day is complete. */
+/* Takes the progress bar's place in the section head once the day is complete. It rises above the
+   head's rule into the gap over it, so it never covers (or hides behind) the first habit. */
+.today .section-head {
+  position: relative;
+}
+
 .stamp {
   position: absolute;
-  top: -40px;
   right: -4px;
-  width: 88px;
-  height: 88px;
+  bottom: 8px;
+  z-index: 1;
+  width: 80px;
+  height: 80px;
   display: grid;
   place-items: center;
   text-align: center;
@@ -1172,6 +1178,13 @@ button {
   }
   .title {
     font-size: 44px;
+  }
+  .stamp {
+    right: 0;
+    width: 64px;
+    height: 64px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
   }
   .hint {
     display: none;
