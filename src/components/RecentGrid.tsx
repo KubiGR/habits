@@ -34,6 +34,9 @@ export function RecentGrid({ habits, checks, today, onToggle }: Props) {
   // How many days the window has been moved back from its default position.
   const [back, setBack] = useState(0)
   const wrap = useRef<HTMLDivElement>(null)
+  // Scrolled sideways, the names need a solid backing so cells don't show through; otherwise the
+  // page's dots should.
+  const [scrolled, setScrolled] = useState(false)
   const ahead = useMediaQuery('(max-width: 640px)') ? AHEAD_NARROW : AHEAD
 
   const first = addDays(fromKey(today), -PAST - back)
@@ -106,7 +109,11 @@ export function RecentGrid({ habits, checks, today, onToggle }: Props) {
       {!hasHabits ? (
         <p className="empty">Your days fill in here as you go.</p>
       ) : (
-        <div className="grid-wrap" ref={wrap}>
+        <div
+          className={cls('grid-wrap', scrolled && 'scrolled')}
+          ref={wrap}
+          onScroll={(e) => setScrolled(e.currentTarget.scrollLeft > 0)}
+        >
           <table className="grid">
             <thead>
               <tr className="months">

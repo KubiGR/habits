@@ -856,6 +856,10 @@ button {
   position: sticky;
   left: 0;
   z-index: 1;
+}
+
+/* Only once scrolled do cells pass under the names, so only then hide the page's dots behind them. */
+.grid-wrap.scrolled .grid tr > :first-child {
   background: var(--paper);
   /* Covers the 2px column gap, so scrolled cells don't peek through. */
   box-shadow: 2px 0 0 var(--paper);
