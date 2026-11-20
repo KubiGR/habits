@@ -29,10 +29,12 @@ export function AddHabit({ onAdd, suggest }: Props) {
     input.current?.focus()
   }
 
+  /** Cancel or Escape: clear and close. Focus is often on an option or the Cancel button itself, not the input. */
   function reset() {
     setName('')
     setSchedule(DAILY)
-    input.current?.blur()
+    setFocused(false)
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
   }
 
   function pick(suggestion: string) {
