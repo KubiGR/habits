@@ -42,36 +42,3 @@ export const playTick =() => pluck(1046.5, { gain: 0.07, dur: 0.22 })
 export const playUncheck = () => pluck(392, { gain: 0.07, dur: 0.18 })
 export const playComplete = () =>
   [523.25, 659.25, 783.99, 1046.5, 1318.51].forEach((f, i) => pluck(f, { at: i * 0.08, gain: 0.13, dur: 1.1 }))
-
-/** Petting the buddy: a low, soft rumble, pulsing about 24 times a second like a purr. */
-export function playPurr() {
-  if (!enabled) return
-  ctx ??= new AudioContext()
-  if (ctx.state === 'suspended') void ctx.resume()
-  const t = ctx.currentTime
-  const dur = 0.9
-  const env = ctx.createGain()
-  env.gain.setValueAtTime(0, t)
-  env.gain.linearRampToValueAtTime(0.14, t + 0.12)
-  env.gain.linearRampToValueAtTime(0.1, t + dur - 0.3)
-  env.gain.linearRampToValueAtTime(0, t + dur)
-  const lowpass = ctx.createBiquadFilter()
-  lowpass.type = 'lowpass'
-  lowpass.frequency.value = 320
-  const rumble = ctx.createOscillator()
-  rumble.type = 'sawtooth'
-  rumble.frequency.value = 52
-  // The pulse: a gain that a slow oscillator swings between silent and full.
-  const pulse = ctx.createGain()
-  pulse.gain.value = 0.5
-  const lfo = ctx.createOscillator()
-  lfo.frequency.value = 24
-  const depth = ctx.createGain()
-  depth.gain.value = 0.5
-  lfo.connect(depth).connect(pulse.gain)
-  rumble.connect(lowpass).connect(pulse).connect(env).connect(ctx.destination)
-  for (const osc of [rumble, lfo]) {
-    osc.start(t)
-    osc.stop(t + dur)
-  }
-}

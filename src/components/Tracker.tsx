@@ -7,7 +7,6 @@ import { setSoundEnabled } from '../lib/sound'
 import { useRoute } from '../lib/useRoute'
 import { useStore } from '../lib/useStore'
 import { useToday } from '../lib/useToday'
-import { Buddy } from './Buddy'
 import { Masthead } from './Masthead'
 import { People } from './People'
 import { RecentGrid } from './RecentGrid'
@@ -106,19 +105,16 @@ export function Tracker({ backend, me, onPeopleChange }: Props) {
         <Stats habits={habits} checks={checks} today={today} />
       ) : (
         <>
-          <div className="today-row">
-            <Today
-              habits={habits}
-              checks={checks}
-              today={today}
-              onToggle={toggle}
-              onAdd={addHabit}
-              onSave={(habit) => dispatch({ type: 'saveHabit', habit })}
-              onDelete={(id) => dispatch({ type: 'deleteHabit', id })}
-              onReorder={(ids) => dispatch({ type: 'reorder', ids })}
-            />
-            <Buddy habits={habits} checks={checks} today={today} />
-          </div>
+          <Today
+            habits={habits}
+            checks={checks}
+            today={today}
+            onToggle={toggle}
+            onAdd={addHabit}
+            onSave={(habit) => dispatch({ type: 'saveHabit', habit })}
+            onDelete={(id) => dispatch({ type: 'deleteHabit', id })}
+            onReorder={(ids) => dispatch({ type: 'reorder', ids })}
+          />
           <RecentGrid habits={habits} checks={checks} today={today} onToggle={toggle} />
         </>
       )}

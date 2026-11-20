@@ -8,7 +8,6 @@ A minimal habit tracker, inspired by the Atomic Habits tracker and the Theme Sys
 - **Stats** (tab at the top): check-ins, perfect days and longest perfect run, a year heatmap, and per habit its streak and best, completion over the last 30 days and all time, which weekdays you tend to do it, and its own heatmap.
 - **Last 25 days**: a rolling grid, like GitHub's activity graph. Every habit × every recent day, with a few empty days on the right so today isn't against the edge. Click any past day to fill it in late. Days where every habit was done get a dot. `←` `→` step a week at a time.
 - **Half checks**: for days you did part of a habit. On a phone, long-press. On a computer, Shift+click, right-click, the ½ button, or `Shift`+`1`–`9`. A half keeps the streak going (showing up counts) and adds ½ to the totals, but doesn't complete the day or count as a perfect day.
-- **Buddy**: a cat that lives next to today's list (above it on a phone). Its mood follows your last 7 days, yesterday counting most, lifted by what's done so far today: sad, restless, content, happy, and overjoyed (hopping, hearts) once today is done, whatever came before. On days with nothing due it naps. Tap it to pet it; it purrs. Mood rules: `src/lib/buddy.ts`.
 - **People**: anyone can sign in at habits.dranidis.com, and each person has their own private habits. New sign-ups wait until the owner approves them in the **People** tab (owner only; a badge shows how many are waiting). The owner can also block someone or remove their access later; their habits are kept.
 - **Appearance**: Auto (follows the system), Light or Dark, set from the footer.
 - **Keys**: `1`–`9` check today's habits, `Shift`+`1`–`9` half, `←` `→` move the grid by a week.
@@ -60,7 +59,6 @@ The service worker (`public/sw.js`) only runs in production builds, never under 
 - `src/lib/useStore.ts`: optimistic updates, writes sent one at a time in order, reload when the tab regains focus
 - `src/lib/http.ts`: the frontend's client for the API
 - `src/lib/schedule.ts`: schedules and their descriptions
-- `src/lib/buddy.ts`: the buddy's mood, from the same schedule-aware day scores as the stats
 - `src/lib/stats.ts`: streaks, "never miss twice", completion rates, perfect days. All the schedule-aware counting lives here.
 - `src/lib/sound.ts`: Web Audio plucks, no audio files
-- `src/components/`: `Gate` (signed in → tracker, or "waiting for approval"), `Tracker`, `People` (owner only), `Masthead`, `Today` (drag to reorder), `Buddy` (the cat, drawn as inline SVG), `HabitRow` (row and editor), `AddHabit`, `ScheduleField` (the schedule picker both use), `RecentGrid`, `Stats`, `Heatmap`
+- `src/components/`: `Gate` (signed in → tracker, or "waiting for approval"), `Tracker`, `People` (owner only), `Masthead`, `Today` (drag to reorder), `HabitRow` (row and editor), `AddHabit`, `ScheduleField` (the schedule picker both use), `RecentGrid`, `Stats`, `Heatmap`
