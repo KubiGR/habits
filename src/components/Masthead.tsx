@@ -1,6 +1,7 @@
 import { fromKey } from '../lib/dates'
 import { cls } from '../lib/dom'
 import { litPath, moonPhase } from '../lib/moon'
+import { meteorShower, planets, planetsTonight, starSign } from '../lib/sky'
 import type { Route } from '../lib/useRoute'
 
 const weekdayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'long' })
@@ -22,10 +23,7 @@ export function Masthead({ today, route, admin, waiting }: Props) {
     <header className="masthead">
       <div>
         <h1 className="title">{TITLE[route] ?? weekdayFmt.format(d)}</h1>
-        <div className="date">
-          <span>{dateFmt.format(d)}</span>
-          <Moon day={today} />
-        </div>
+        <div className="date">{dateFmt.format(d)}</div>
       </div>
       <nav className="tabs">
         <a href="#/" className={cls(route === 'today' && 'active')} aria-current={route === 'today' ? 'page' : undefined}>
@@ -46,7 +44,42 @@ export function Masthead({ today, route, admin, waiting }: Props) {
           </a>
         )}
       </nav>
+      <Sky day={today} />
     </header>
+  )
+}
+
+const WHEN = { evening: 'evening', night: 'most of the night', dawn: 'before dawn', hidden: 'too close to the Sun' }
+
+/** Tonight's sky under the date: moon, star sign, a meteor shower when one is near, and visible planets. */
+function Sky({ day }: { day: string }) {
+  const sign = starSign(day)
+  const shower = meteorShower(day)
+  const { tonight, dawn } = planetsTonight(day)
+  const detail = planets(day)
+    .map((p) => `${p.name}: ${WHEN[p.when]} (${Math.round(p.elongation)}° from the Sun)`)
+    .join('\n')
+  return (
+    <div className="sky">
+      <Moon day={day} />
+      <span title="Star sign">
+        <span className="sky-glyph" aria-hidden="true">
+          {sign.glyph}
+        </span>
+        {sign.name}
+      </span>
+      {shower && (
+        <span title="Meteor shower">
+          <span className="sky-glyph" aria-hidden="true">
+            ✦
+          </span>
+          {shower}
+        </span>
+      )}
+      {(tonight.length > 0 || dawn.length > 0) && (
+        <span title={detail}>{tonight.length ? `Tonight: ${tonight.join(', ')}` : `Before dawn: ${dawn.join(', ')}`}</span>
+      )}
+    </div>
   )
 }
 

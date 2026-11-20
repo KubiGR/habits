@@ -162,28 +162,40 @@ button {
   line-height: 1.1;
 }
 
+/* Title and tabs side by side, the sky row under both. */
 .masthead {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
   gap: 16px;
 }
 
 .masthead .date {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 16px;
   margin-top: 8px;
   color: var(--ink-2);
 }
 
-.moon {
+/* Its own full-width row under the date and tabs. */
+.sky {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 18px;
+  margin-top: -6px;
+  color: var(--ink-3);
+}
+
+.sky > span {
   display: inline-flex;
   align-items: center;
   gap: 7px;
   white-space: nowrap;
-  color: var(--ink-3);
+}
+
+.sky-glyph {
+  color: var(--ink-2);
+  font-size: 13px;
 }
 
 .moon svg {
@@ -1311,7 +1323,11 @@ button {
     gap: 48px;
   }
   .title {
-    font-size: 44px;
+    /* "Wednesday" next to three tabs still fits a 375px screen. */
+    font-size: min(44px, 10vw);
+  }
+  .tabs a {
+    padding: 4px 8px;
   }
   .moon-more {
     display: none;
