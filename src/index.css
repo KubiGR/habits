@@ -769,6 +769,328 @@ button {
   }
 }
 
+/* ── Buddy ────────────────────────────────── */
+
+/* Today's list with the buddy beside it; on narrow screens the buddy sits above as a short row. */
+.today-row {
+  display: grid;
+  grid-template-columns: minmax(0, 640px) minmax(180px, 1fr);
+  gap: 48px;
+  align-items: start;
+}
+
+.buddy {
+  position: sticky;
+  top: 32px;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.buddy .cat {
+  position: relative;
+  width: 150px;
+  padding: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.buddy .cat:active svg {
+  transform: scale(0.96);
+}
+
+.cat svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.15s;
+}
+
+.cat .fill {
+  fill: var(--paper);
+}
+
+.cat .whiskers {
+  stroke: var(--ink-3);
+  stroke-width: 1.5;
+}
+
+.cat .nose {
+  fill: var(--ink);
+  stroke-width: 1;
+}
+
+.cat .cheeks {
+  fill: var(--accent);
+  stroke: none;
+  opacity: 0.45;
+}
+
+.cat .eye {
+  fill: var(--ink);
+  stroke: none;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: blink 5s infinite;
+}
+
+.cat .tear {
+  fill: var(--accent);
+  stroke: none;
+  animation: tear 2.6s ease-in infinite;
+}
+
+.cat .body {
+  transform-box: view-box;
+  transform-origin: 60px 104px;
+  animation: breathe 3.6s ease-in-out infinite;
+}
+
+.cat .head {
+  transform-box: view-box;
+  transform-origin: 60px 66px;
+  transition: transform 0.4s;
+}
+
+.cat .ear {
+  transform-box: view-box;
+  transition: transform 0.4s;
+}
+
+.cat .ear-l {
+  transform-origin: 50px 26px;
+}
+
+.cat .ear-r {
+  transform-origin: 70px 26px;
+}
+
+.cat .tail {
+  transform-box: view-box;
+  transform-origin: 84px 99px;
+  animation: wag 2.6s ease-in-out infinite;
+}
+
+.happy .cat .tail {
+  animation-duration: 1.4s;
+}
+
+.meh .cat .tail {
+  animation-duration: 4.5s;
+}
+
+.sad .cat .tail,
+.resting .cat .tail {
+  animation: none;
+}
+
+.sad .cat .head {
+  transform: translateY(4px) rotate(-5deg);
+}
+
+.sad .cat .ear-l {
+  transform: rotate(-18deg);
+}
+
+.sad .cat .ear-r {
+  transform: rotate(18deg);
+}
+
+.meh .cat .ear-l {
+  transform: rotate(-10deg);
+}
+
+.meh .cat .ear-r {
+  transform: rotate(10deg);
+}
+
+.resting .cat .head {
+  transform: translateY(5px) rotate(6deg);
+}
+
+.resting .cat .body {
+  animation-duration: 5.5s;
+}
+
+.ecstatic .cat svg {
+  animation: hop 1.8s ease-in-out infinite;
+}
+
+.ecstatic .cat .tail {
+  animation-duration: 0.7s;
+}
+
+.pet-heart,
+.joy span {
+  position: absolute;
+  color: var(--accent);
+  pointer-events: none;
+}
+
+.pet-heart {
+  top: 0;
+  left: 50%;
+  font-size: 22px;
+  animation: float-up 1s ease-out both;
+}
+
+.joy span {
+  top: 10%;
+  font-size: 14px;
+  animation: float-up 2.4s ease-out infinite;
+}
+
+.joy span:first-child {
+  left: 10%;
+}
+
+.joy span:last-child {
+  right: 8%;
+  animation-delay: 1.2s;
+}
+
+.zzz {
+  position: absolute;
+  top: 0;
+  right: 6%;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--ink-3);
+  animation: float-up 3s ease-out infinite;
+}
+
+.zzz span {
+  font-size: 13px;
+  vertical-align: super;
+}
+
+.buddy-words {
+  display: grid;
+  gap: 4px;
+}
+
+.buddy-line {
+  margin: 0;
+  max-width: 220px;
+  font-family: var(--serif);
+  font-size: 18px;
+  font-style: italic;
+  line-height: 1.35;
+  color: var(--ink-2);
+}
+
+.buddy-meta {
+  margin: 0;
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+@keyframes blink {
+  0%,
+  93%,
+  100% {
+    transform: scaleY(1);
+  }
+  96% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(1.035);
+  }
+}
+
+@keyframes wag {
+  0%,
+  100% {
+    transform: rotate(-7deg);
+  }
+  50% {
+    transform: rotate(9deg);
+  }
+}
+
+@keyframes hop {
+  0%,
+  40%,
+  100% {
+    transform: translateY(0);
+  }
+  10% {
+    transform: translateY(-10px);
+  }
+  20% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes tear {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+}
+
+@keyframes float-up {
+  0% {
+    transform: translate(-50%, 0) scale(0.6);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -36px) scale(1.1);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 860px) {
+  .today-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  .buddy {
+    position: static;
+    order: -1;
+    grid-template-columns: auto 1fr;
+    justify-items: start;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
+  }
+  .buddy .cat {
+    width: 76px;
+  }
+  .buddy-line {
+    max-width: none;
+    font-size: 16px;
+  }
+}
+
 .vote {
   margin: 20px 0 0;
   font-family: var(--serif);
