@@ -1,0 +1,46 @@
+# Komodo stack for Habits: Postgres and the app. Komodo clones this repo on the server and runs
+# this file from deploy/ with "run build" on, so the image is built from the commit being deployed.
+services:
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: habits
+      POSTGRES_DB: habits
+      # Postgres is never published, only reachable on this stack's own network. To use a different
+      # password, set POSTGRES_PASSWORD in the stack's environment before the first deploy: Postgres
+      # reads it only when it creates the database. Keep it URL-safe, it goes into DATABASE_URL.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-habits}
+    volumes:
+      - habits-pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U habits']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [habits]
+
+  app:
+    build:
+      # Relative to this file: the repository root.
+      context: ..
+    image: habits:latest
+    # Never try to pull habits:latest from a registry; it only exists here.
+    pull_policy: build
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://habits:${POSTGRES_PASSWORD:-habits}@db:5432/habits
+    # On the LAN. There's no login, so don't forward this port on the router; for access from
+    # outside, put it behind a Cloudflare Tunnel hostname with Access in front.
+    ports:
+      - '${APP_PORT:-3090}:3000'
+    networks: [habits]
+
+volumes:
+  habits-pgdata:
+
+networks:
+  habits:

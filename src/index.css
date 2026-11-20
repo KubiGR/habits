@@ -1,0 +1,1207 @@
+:root {
+  --paper: #e8e7e3;
+  --ink: #1f1f1d;
+  --ink-2: #63625d;
+  --ink-3: #9f9d97;
+  --line: rgba(31, 31, 29, 0.15);
+  --tint: rgba(31, 31, 29, 0.045);
+  --dot: rgba(31, 31, 29, 0.17);
+  --accent: #d2461b;
+  --serif: 'Newsreader', Georgia, serif;
+  --mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  color-scheme: light;
+}
+
+/* Dark follows the system unless the footer switch forced Light; Dark can also be forced. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --paper: #1a1a19;
+    --ink: #ebeae5;
+    --ink-2: #a3a19b;
+    --ink-3: #66655f;
+    --line: rgba(235, 234, 229, 0.13);
+    --tint: rgba(235, 234, 229, 0.04);
+    --dot: rgba(235, 234, 229, 0.08);
+    --accent: #f06b3e;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --paper: #1a1a19;
+  --ink: #ebeae5;
+  --ink-2: #a3a19b;
+  --ink-3: #66655f;
+  --line: rgba(235, 234, 229, 0.13);
+  --tint: rgba(235, 234, 229, 0.04);
+  --dot: rgba(235, 234, 229, 0.08);
+  --accent: #f06b3e;
+  color-scheme: dark;
+}
+
+body {
+  transition: background-color 0.3s, color 0.3s;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--paper);
+  background-image: radial-gradient(var(--dot) 1px, transparent 1.3px);
+  background-size: 22px 22px;
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.loading {
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 12px;
+  color: var(--ink-3);
+}
+
+.loading .err {
+  margin: 0;
+}
+
+.loading button {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: var(--ink-2);
+}
+
+.page {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 72px 40px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+}
+
+/* ── Masthead ─────────────────────────────── */
+
+.section-head h2,
+.grid tfoot th {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 60px;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+}
+
+.masthead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.masthead .date {
+  margin-top: 8px;
+  color: var(--ink-2);
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding-top: 14px;
+}
+
+.tabs a {
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: var(--ink-3);
+  text-decoration: none;
+  transition: color 0.15s, background 0.15s;
+}
+
+.tabs a:hover {
+  color: var(--ink);
+}
+
+.tabs a.active {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ── Section chrome ───────────────────────── */
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 10px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.section-head h2 {
+  margin: 0;
+}
+
+.empty {
+  color: var(--ink-3);
+}
+
+/* ── Today ────────────────────────────────── */
+
+.today {
+  position: relative;
+  max-width: 640px;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.seg {
+  width: 16px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line);
+  transition: background 0.35s;
+}
+
+.seg.done {
+  background: var(--ink);
+}
+
+.seg.half {
+  background: linear-gradient(90deg, var(--ink) 50%, var(--line) 50%);
+}
+
+.tally {
+  margin-left: 8px;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.habits {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.group-label {
+  margin: 22px 0 0;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.habit {
+  position: relative;
+  display: grid;
+  grid-template-columns: 14px 30px 1fr auto auto;
+  align-items: center;
+  gap: 16px;
+  min-height: 58px;
+  border-bottom: 1px dashed var(--line);
+  background: var(--paper);
+}
+
+/* While dragging, the other rows glide out of the way; the held row follows the pointer exactly. */
+.groups.dragging .habit {
+  transition: transform 0.2s ease;
+}
+
+.groups.dragging .habit.lifted {
+  z-index: 2;
+  transition: none;
+  border-bottom-color: transparent;
+  box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.35);
+  border-radius: 8px;
+}
+
+.groups.dragging {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Shows the shortcut number; turns into a drag handle on hover. */
+.grip {
+  position: relative;
+  height: 30px;
+  color: var(--ink-3);
+  font-size: 11px;
+  text-align: right;
+  cursor: grab;
+  touch-action: none;
+}
+
+.lifted .grip {
+  cursor: grabbing;
+}
+
+.grip .dots {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.grip .num {
+  transition: opacity 0.15s;
+}
+
+.habit:hover .grip .dots,
+.grip:focus-visible .dots,
+.lifted .grip .dots {
+  opacity: 1;
+}
+
+.habit:hover .grip .num,
+.grip:focus-visible .num,
+.lifted .grip .num {
+  opacity: 0;
+}
+
+/* Rest day, or a weekly target already met: still checkable, just quieter. */
+.habit.off .name {
+  color: var(--ink-3);
+}
+
+.habit.off .box {
+  border-style: dashed;
+  border-color: var(--ink-3);
+}
+
+.meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.rest-note {
+  margin: 14px 0 0;
+  font-family: var(--serif);
+  font-size: 18px;
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+.name,
+.name-input,
+.add input {
+  font-family: var(--serif);
+  font-size: 22px;
+  line-height: 1.3;
+}
+
+.name {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  text-align: left;
+  transition: color 0.4s;
+}
+
+.habit.done .name,
+.habit.half .name {
+  color: var(--ink-2);
+}
+
+.name-input,
+.add input {
+  width: 100%;
+  padding: 0;
+  background: none;
+  border: 0;
+  outline: 0;
+}
+
+.add input::placeholder {
+  color: var(--ink-3);
+}
+
+.miss {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+
+.streak {
+  min-width: 4ch;
+  text-align: right;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.streak.hot {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  color: var(--ink-3);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.habit:hover .actions,
+.actions:focus-within {
+  opacity: 1;
+}
+
+.actions button:hover {
+  color: var(--ink);
+}
+
+/* ── Habit editor ─────────────────────────── */
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px 0 18px;
+  border-bottom: 1px dashed var(--line);
+}
+
+.editor .name-input {
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.field .label {
+  flex: none;
+  width: 56px;
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.options button,
+.stepper button {
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-2);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.options button:hover,
+.stepper button:hover:not(:disabled) {
+  border-color: var(--ink-2);
+  color: var(--ink);
+}
+
+.options button[aria-pressed='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.options.days button {
+  width: 32px;
+  padding: 4px 0;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stepper button {
+  width: 32px;
+  padding: 4px 0;
+}
+
+.stepper button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.editor-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 4px;
+  color: var(--ink-2);
+}
+
+.editor-actions .spacer {
+  flex: 1;
+}
+
+.editor-actions button:hover {
+  color: var(--ink);
+}
+
+.editor-actions .danger,
+.editor-actions .confirm {
+  color: var(--accent);
+}
+
+.editor-actions .confirm {
+  display: flex;
+  gap: 12px;
+}
+
+.editor-actions .confirm button {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.editor-actions .save {
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.editor-actions .save:hover {
+  color: var(--paper);
+}
+
+.editor-actions .save:disabled {
+  opacity: 0.4;
+}
+
+.half-btn {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.half-btn.active {
+  color: var(--accent);
+}
+
+/*
+ * The checkbox: press, ink fills from the center, the check draws itself, a ring flies out.
+ * Half fills the top-left triangle, like a slash in a paper journal. Both shapes are
+ * four-point polygons so done ⇄ half morphs smoothly.
+ */
+.box,
+.cell {
+  --full: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  --half: polygon(0 0, 100% 0, 0 100%, 0 100%);
+}
+
+.box {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--ink);
+  border-radius: 8px;
+  transition: transform 0.18s var(--spring);
+}
+
+@media (hover: hover) {
+  .box:hover {
+    transform: scale(1.07);
+  }
+}
+
+.box:active {
+  transform: scale(0.84);
+  transition-duration: 0.06s;
+}
+
+.box .fill {
+  position: absolute;
+  inset: -1.5px;
+  border-radius: 8px;
+  background: var(--ink);
+  clip-path: var(--full);
+  transform: scale(0);
+  transition:
+    transform 0.34s var(--spring),
+    clip-path 0.3s ease-out;
+}
+
+.box.done .fill,
+.box.half .fill {
+  transform: scale(1);
+}
+
+.box.half .fill {
+  clip-path: var(--half);
+}
+
+.box svg {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: var(--paper);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.box path {
+  stroke-dasharray: 18;
+  stroke-dashoffset: 18;
+  transition: stroke-dashoffset 0.12s ease-in;
+}
+
+.box.done path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.26s 0.12s ease-out;
+}
+
+.burst {
+  position: absolute;
+  inset: -1.5px;
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  pointer-events: none;
+  animation: burst 0.6s ease-out forwards;
+}
+
+.burst.soft {
+  border-color: var(--ink-3);
+  animation-duration: 0.45s;
+}
+
+@keyframes burst {
+  from {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.plus {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1.5px dashed var(--ink-3);
+  border-radius: 8px;
+  color: var(--ink-3);
+}
+
+.add:focus-within .plus {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+/* Takes the progress bar's place in the section head once the day is complete. */
+.stamp {
+  position: absolute;
+  top: -40px;
+  right: -4px;
+  width: 88px;
+  height: 88px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: var(--paper);
+  transform: rotate(-12deg);
+  opacity: 0.92;
+  pointer-events: none;
+}
+
+.stamp::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+}
+
+.stamp.animate {
+  animation: stamp 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.25) both;
+}
+
+@keyframes stamp {
+  0% {
+    transform: rotate(-26deg) scale(2.4);
+    opacity: 0;
+  }
+  60% {
+    transform: rotate(-10deg) scale(0.93);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(-12deg) scale(1);
+    opacity: 0.92;
+  }
+}
+
+.vote {
+  margin: 20px 0 0;
+  font-family: var(--serif);
+  font-size: 18px;
+  font-style: italic;
+  color: var(--ink-2);
+  animation: fade-up 0.6s 0.25s ease-out both;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.suggest {
+  margin-top: 20px;
+  color: var(--ink-2);
+}
+
+.suggest p {
+  margin: 0 0 12px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  padding: 5px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.chip:hover {
+  border-color: var(--ink);
+  background: var(--tint);
+}
+
+/* ── Recent days grid ─────────────────────── */
+
+.nav {
+  display: flex;
+  gap: 4px;
+}
+
+.nav button {
+  padding: 2px 8px;
+  border-radius: 6px;
+  color: var(--ink-2);
+}
+
+.nav button:hover:not(:disabled) {
+  background: var(--tint);
+  color: var(--ink);
+}
+
+.nav button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.grid-wrap {
+  overflow-x: auto;
+  padding: 4px 0 8px;
+}
+
+.grid {
+  border-collapse: separate;
+  border-spacing: 2px 5px;
+}
+
+.grid th,
+.grid td {
+  padding: 0;
+  font-weight: 400;
+}
+
+/* Habit names stay put while the days scroll sideways on narrow screens. */
+.grid tr > :first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--paper);
+  /* Covers the 2px column gap, so scrolled cells don't peek through. */
+  box-shadow: 2px 0 0 var(--paper);
+}
+
+.grid .months th {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink-2);
+}
+
+/* Month start: a hairline down the left edge of its label, like a page divider. */
+.grid .months th:not(:first-child, :last-child) {
+  box-shadow: inset 1px 0 var(--line);
+  padding-left: 5px;
+}
+
+.grid .months th:nth-child(2) {
+  box-shadow: none;
+  padding-left: 0;
+}
+
+.grid thead tr:not(.months) th {
+  width: 20px;
+  font-size: 10px;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--ink-3);
+}
+
+.grid thead th b {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.grid thead th.is-today b {
+  color: var(--accent);
+}
+
+.grid tbody th {
+  max-width: 160px;
+  padding-right: 16px;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--serif);
+  font-size: 16px;
+}
+
+.cell {
+  position: relative;
+  display: block;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  transition: transform 0.15s var(--spring), border-color 0.2s;
+}
+
+/* Not one of this habit's days. */
+.cell.rest {
+  border-style: dotted;
+  opacity: 0.55;
+}
+
+.cell.weekend {
+  background: var(--tint);
+}
+
+.cell::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 6px;
+  background: var(--ink);
+  clip-path: var(--full);
+  transform: scale(0);
+  transition:
+    transform 0.28s var(--spring),
+    clip-path 0.25s ease-out;
+}
+
+.cell.done::before,
+.cell.half::before {
+  transform: scale(1);
+}
+
+.cell.half::before {
+  clip-path: var(--half);
+}
+
+.cell.is-today {
+  border: 1.5px solid var(--accent);
+}
+
+@media (hover: hover) {
+  .cell:not(:disabled):hover {
+    border-color: var(--ink-2);
+    transform: scale(1.14);
+  }
+
+  .cell.is-today:not(:disabled):hover {
+    border-color: var(--accent);
+  }
+}
+
+.cell:not(:disabled):active {
+  transform: scale(0.84);
+  transition-duration: 0.06s;
+}
+
+.cell:disabled {
+  border-style: dotted;
+  background: none;
+  cursor: default;
+}
+
+.count {
+  padding-left: 14px !important;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.count span {
+  color: var(--ink-3);
+}
+
+.grid tfoot th {
+  padding-top: 6px;
+  text-align: left;
+  color: var(--ink-3);
+}
+
+.grid tfoot .count {
+  color: var(--accent);
+}
+
+.dot {
+  display: block;
+  width: 6px;
+  height: 6px;
+  margin: 6px auto 0;
+  border-radius: 50%;
+  background: var(--line);
+  transition: background 0.3s, transform 0.4s var(--spring);
+}
+
+.dot.on {
+  background: var(--accent);
+  transform: scale(1.4);
+}
+
+/* ── Footer & toast ───────────────────────── */
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.foot .spacer {
+  flex: 1;
+}
+
+.foot button:hover {
+  color: var(--ink);
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: calc(100vw - 32px);
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--paper);
+  transform: translateX(-50%);
+  animation: fade-up 0.25s ease-out both;
+}
+
+.err {
+  color: var(--accent);
+}
+
+/* ── Stats ────────────────────────────────── */
+
+/* Flex rather than grid so a short last row stretches instead of leaving an empty cell. */
+.tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--line);
+}
+
+.tile {
+  flex: 1 1 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  background: var(--paper);
+}
+
+.tile b {
+  font-family: var(--serif);
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.tile span {
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.tiles.small .tile {
+  flex-basis: 96px;
+  padding: 12px 14px;
+}
+
+.tiles.small .tile b {
+  font-size: 24px;
+}
+
+.habit-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding-top: 16px;
+}
+
+.habit-card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.habit-card header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+
+.habit-card h3 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.weekdays {
+  display: flex;
+  gap: 8px;
+  height: 64px;
+}
+
+.weekday {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 22px;
+  font-size: 10px;
+  color: var(--ink-3);
+}
+
+.weekday .bar {
+  position: relative;
+  flex: 1;
+  width: 8px;
+  border-radius: 4px;
+  background: var(--tint);
+  overflow: hidden;
+}
+
+.weekday .bar span {
+  position: absolute;
+  inset: auto 0 0;
+  border-radius: 4px;
+  background: var(--ink);
+  transition: height 0.5s var(--spring);
+}
+
+.heat-wrap {
+  container-type: inline-size;
+  overflow-x: auto;
+  padding: 4px 0 8px;
+}
+
+.heat {
+  /* 53 weeks fill the column on wide screens; below 10px cells it scrolls sideways instead. */
+  --heat-cell: clamp(10px, (100cqw - 52 * 3px) / 53, 16px);
+  display: grid;
+  grid-template-rows: 14px repeat(7, var(--heat-cell));
+  gap: 3px;
+  width: max-content;
+}
+
+.heat-month {
+  grid-row: 1;
+  font-size: 10px;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.heat-cell {
+  border-radius: 3px;
+  background: var(--tint);
+}
+
+.heat-cell.l0 {
+  box-shadow: inset 0 0 0 1px var(--line);
+  background: none;
+}
+
+.heat-cell.l1 {
+  background: color-mix(in srgb, var(--ink) 30%, transparent);
+}
+
+.heat-cell.l2 {
+  background: color-mix(in srgb, var(--ink) 60%, transparent);
+}
+
+.heat-cell.l3 {
+  background: var(--ink);
+}
+
+.heat-cell.is-today {
+  box-shadow: 0 0 0 1.5px var(--accent);
+}
+
+@media (max-width: 640px) {
+  .page {
+    /* Installed on a phone, keep clear of the notch and the home indicator. */
+    padding: max(40px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+      max(32px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    gap: 48px;
+  }
+  .title {
+    font-size: 44px;
+  }
+  .hint {
+    display: none;
+  }
+  .grid tbody th {
+    max-width: 104px;
+    padding-right: 8px;
+    font-size: 14px;
+  }
+}
+
+/* Long-press is the half gesture on touch, so keep iOS from selecting text or opening a callout. */
+.box,
+.name,
+.cell {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+/* Touch screens: no hover to reveal row actions, and no keyboard shortcuts to number. */
+@media (hover: none) {
+  .habit {
+    grid-template-columns: 18px 30px 1fr auto auto;
+    gap: 12px;
+  }
+  .grip .num,
+  .hint {
+    display: none;
+  }
+  .grip .dots {
+    opacity: 1;
+  }
+  .actions {
+    opacity: 1;
+    gap: 14px;
+  }
+  .half-btn {
+    margin: -6px -4px;
+    padding: 6px 4px;
+    font-size: 17px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

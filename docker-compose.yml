@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: habits
+      POSTGRES_PASSWORD: habits
+      POSTGRES_DB: habits
+    ports:
+      - '127.0.0.1:5436:5432'
+    volumes:
+      # Postgres 18 images keep data under /var/lib/postgresql/<version>, so mount the parent.
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U habits']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
