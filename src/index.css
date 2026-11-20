@@ -5,7 +5,7 @@
   --ink-3: #9f9d97;
   --line: rgba(31, 31, 29, 0.15);
   --tint: rgba(31, 31, 29, 0.045);
-  --dot: rgba(31, 31, 29, 0.17);
+  --dot: rgba(31, 31, 29, 0.09);
   --accent: #d2461b;
   --serif: 'Newsreader', Georgia, serif;
   --mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
@@ -22,7 +22,7 @@
     --ink-3: #66655f;
     --line: rgba(235, 234, 229, 0.13);
     --tint: rgba(235, 234, 229, 0.04);
-    --dot: rgba(235, 234, 229, 0.08);
+    --dot: rgba(235, 234, 229, 0.045);
     --accent: #f06b3e;
     color-scheme: dark;
   }
@@ -35,7 +35,7 @@
   --ink-3: #66655f;
   --line: rgba(235, 234, 229, 0.13);
   --tint: rgba(235, 234, 229, 0.04);
-  --dot: rgba(235, 234, 229, 0.08);
+  --dot: rgba(235, 234, 229, 0.045);
   --accent: #f06b3e;
   color-scheme: dark;
 }
@@ -57,7 +57,7 @@ body {
   min-height: 100vh;
   background-color: var(--paper);
   background-image: radial-gradient(var(--dot) 1px, transparent 1.3px);
-  background-size: 22px 22px;
+  background-size: 26px 26px;
   background-attachment: fixed;
   color: var(--ink);
   font-family: var(--mono);
