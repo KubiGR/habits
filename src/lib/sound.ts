@@ -1,5 +1,29 @@
 let ctx: AudioContext | null = null
+let out: AudioNode | null = null
 let enabled = true
+
+/** How much louder than each sound's own level everything plays. */
+const VOLUME = 2.2
+
+/**
+ * Every sound goes through one volume boost, then a limiter, so overlapping notes (the day's
+ * finishing chord) get louder without distorting.
+ */
+function output(c: AudioContext) {
+  if (!out) {
+    const volume = c.createGain()
+    volume.gain.value = VOLUME
+    const limiter = c.createDynamicsCompressor()
+    limiter.threshold.value = -6
+    limiter.knee.value = 6
+    limiter.ratio.value = 12
+    limiter.attack.value = 0.002
+    limiter.release.value = 0.2
+    volume.connect(limiter).connect(c.destination)
+    out = volume
+  }
+  return out
+}
 
 export const setSoundEnabled = (on: boolean) => {
   enabled = on
@@ -18,7 +42,7 @@ function pluck(freq: number, { at = 0, gain = 0.16, dur = 0.5 } = {}) {
   env.gain.setValueAtTime(0, t)
   env.gain.linearRampToValueAtTime(gain, t + 0.006)
   env.gain.exponentialRampToValueAtTime(0.0001, t + dur)
-  env.connect(ctx.destination)
+  env.connect(output(ctx))
   for (const { mult, type, level } of [
     { mult: 1, type: 'sine', level: 1 },
     { mult: 2, type: 'triangle', level: 0.12 },
