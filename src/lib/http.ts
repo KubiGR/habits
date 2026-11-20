@@ -1,7 +1,13 @@
 import type { Backend, Data } from './data'
 
 async function request(path: string, init?: RequestInit) {
-  const res = await fetch(path, init)
+  // Behind Cloudflare Access, an expired login answers API calls with a redirect to the login page,
+  // which fetch can't follow cross-origin. Reloading the page lets the browser do the login instead.
+  const res = await fetch(path, { ...init, redirect: 'manual' })
+  if (res.type === 'opaqueredirect') {
+    location.reload()
+    throw new Error('Signed out, reloading to sign in again')
+  }
   if (!res.ok) {
     const body = (await res.json().catch(() => null)) as { error?: string } | null
     throw new Error(body?.error ?? `${res.status} ${res.statusText}`)
