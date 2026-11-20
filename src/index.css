@@ -175,7 +175,7 @@ button {
   color: var(--ink-2);
 }
 
-/* Its own full-width row under the date and tabs. */
+/* The moon, on its own full-width row under the date and tabs. */
 .sky {
   grid-column: 1 / -1;
   display: flex;
@@ -191,11 +191,6 @@ button {
   align-items: center;
   gap: 7px;
   white-space: nowrap;
-}
-
-.sky-glyph {
-  color: var(--ink-2);
-  font-size: 13px;
 }
 
 .moon svg {
@@ -1267,7 +1262,8 @@ button {
 .heat-wrap {
   container-type: inline-size;
   overflow-x: auto;
-  padding: 4px 0 8px;
+  /* Room on the right for today's ring, the last cell, which the scroll box would otherwise clip. */
+  padding: 4px 3px 8px 0;
 }
 
 .heat {
@@ -1328,9 +1324,6 @@ button {
   }
   .tabs a {
     padding: 4px 8px;
-  }
-  .moon-more {
-    display: none;
   }
   .stamp {
     right: 0;

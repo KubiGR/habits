@@ -1,7 +1,6 @@
 import { fromKey } from '../lib/dates'
 import { cls } from '../lib/dom'
 import { litPath, moonPhase } from '../lib/moon'
-import { meteorShower, planets, planetsTonight, starSign } from '../lib/sky'
 import type { Route } from '../lib/useRoute'
 
 const weekdayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'long' })
@@ -44,42 +43,10 @@ export function Masthead({ today, route, admin, waiting }: Props) {
           </a>
         )}
       </nav>
-      <Sky day={today} />
+      <div className="sky">
+        <Moon day={today} />
+      </div>
     </header>
-  )
-}
-
-const WHEN = { evening: 'evening', night: 'most of the night', dawn: 'before dawn', hidden: 'too close to the Sun' }
-
-/** Tonight's sky under the date: moon, star sign, a meteor shower when one is near, and visible planets. */
-function Sky({ day }: { day: string }) {
-  const sign = starSign(day)
-  const shower = meteorShower(day)
-  const { tonight, dawn } = planetsTonight(day)
-  const detail = planets(day)
-    .map((p) => `${p.name}: ${WHEN[p.when]} (${Math.round(p.elongation)}° from the Sun)`)
-    .join('\n')
-  return (
-    <div className="sky">
-      <Moon day={day} />
-      <span title="Star sign">
-        <span className="sky-glyph" aria-hidden="true">
-          {sign.glyph}
-        </span>
-        {sign.name}
-      </span>
-      {shower && (
-        <span title="Meteor shower">
-          <span className="sky-glyph" aria-hidden="true">
-            ✦
-          </span>
-          {shower}
-        </span>
-      )}
-      {(tonight.length > 0 || dawn.length > 0) && (
-        <span title={detail}>{tonight.length ? `Tonight: ${tonight.join(', ')}` : `Before dawn: ${dawn.join(', ')}`}</span>
-      )}
-    </div>
   )
 }
 
@@ -94,7 +61,7 @@ function Moon({ day }: { day: string }) {
         {lit > 0.01 && <path d={litPath(phase, r)} />}
       </svg>
       {name}
-      {name !== 'Full moon' && <span className="moon-more"> · {until}</span>}
+      {name !== 'Full moon' && <span> · {until}</span>}
     </span>
   )
 }

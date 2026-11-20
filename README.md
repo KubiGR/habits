@@ -3,7 +3,7 @@
 A minimal habit tracker, inspired by the Atomic Habits tracker and the Theme System Journal.
 
 - **Today**: check off habits. Each check plays the next note up a scale, and finishing the day stamps it done. Streaks show on the right, and a habit you missed last time it was due is flagged "never miss twice".
-- **Sky**: under the date, the moon phase (and days to full), the star sign, a meteor shower in the week before its peak, and which bright planets are up tonight (hover for all five). All worked out in the app (`src/lib/moon.ts`, `src/lib/sky.ts`), with no location or network needed.
+- **Moon**: under the date, the moon phase and days until the next full moon, worked out in the app (`src/lib/moon.ts`), with no location or network needed.
 - **Schedules**: each habit runs every day, on chosen weekdays (say Mon/Wed/Fri), or N times a week. Rest days don't break a streak, and only what's due counts toward finishing the day. Weekly habits show "2 of 3 this week" and count their streak in weeks (`4w`). Pick it as you add a habit (the options open once you start typing: Every day, Weekdays, Weekends, Pick days, Times a week), or later with **Edit**.
 - **Reorder**: drag a habit by its handle (the number on the left turns into ⠿ on hover), or focus the handle and press `↑` `↓`.
 - **Stats** (tab at the top): check-ins, perfect days and longest perfect run, a year heatmap, and per habit its streak and best, completion over the last 30 days and all time, which weekdays you tend to do it, and its own heatmap.
