@@ -57,12 +57,17 @@ export function RecentGrid({ habits, checks, today, onToggle }: Props) {
   const levelOf = (habitId: string, day: string): Level | undefined => checks[checkId(habitId, day)]
   const perfect = (day: string) => day <= today && dayFraction(habits, starts, checks, day) === 1
 
-  /** Score in the window, against how much was asked: scheduled days, or the weekly target pro rata. */
+  /**
+   * Score in the window, against how much was asked: scheduled days, or the weekly target pro rata.
+   * Days before the habit started weren't asked.
+   */
   function tally(h: Habit) {
     const s = h.schedule
+    const start = starts.get(h.id) ?? today
+    const asking = past.filter((k) => k >= start)
     const asked =
-      s.kind === 'weekly' ? Math.round((s.times * past.length) / 7) : past.filter((k) => isOnDay(s, fromKey(k))).length
-    const done = past.reduce((sum, k) => sum + score(levelOf(h.id, k)), 0)
+      s.kind === 'weekly' ? Math.round((s.times * asking.length) / 7) : asking.filter((k) => isOnDay(s, fromKey(k))).length
+    const done = asking.reduce((sum, k) => sum + score(levelOf(h.id, k)), 0)
     return { done, asked }
   }
 
@@ -140,6 +145,7 @@ export function RecentGrid({ habits, checks, today, onToggle }: Props) {
             <tbody>
               {habits.map((h) => {
                 const { done, asked } = tally(h)
+                const start = starts.get(h.id) ?? today
                 return (
                 <tr key={h.id}>
                   <th scope="row" title={h.name}>
@@ -149,6 +155,8 @@ export function RecentGrid({ habits, checks, today, onToggle }: Props) {
                     const k = keys[i]
                     const level = levelOf(h.id, k)
                     const rest = !isOnDay(h.schedule, d)
+                    // Before the habit existed there was nothing to miss, so leave the day blank.
+                    if (k < start) return <td key={k} />
                     return (
                       <td key={k}>
                         <button
@@ -161,7 +169,7 @@ export function RecentGrid({ habits, checks, today, onToggle }: Props) {
                           disabled={k > today}
                           aria-pressed={level === 'done' ? true : level === 'half' ? 'mixed' : false}
                           aria-label={`${h.name}, ${labelFmt.format(d)}`}
-                          title="Click: done · Shift-click, right-click or long-press: half"
+                          title={`${k === start ? 'Started · ' : ''}Click: done · Shift-click, right-click or long-press: half`}
                           {...pressHandlers(
                             (e) => mark(h.id, k, e.shiftKey ? 'half' : 'done'),
                             () => mark(h.id, k, 'half'),
