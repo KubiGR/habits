@@ -34,7 +34,8 @@ services:
     environment:
       DATABASE_URL: postgres://habits:${POSTGRES_PASSWORD:-habits}@db:5432/habits
       # Approves everyone else (the People tab). Habits from before there were people belong to them.
-      OWNER_EMAIL: adranidisb@gmail.com
+      # Set OWNER_EMAIL in the stack's environment (Komodo), so it isn't in the repo.
+      OWNER_EMAIL: ${OWNER_EMAIL:?set OWNER_EMAIL in the stack environment}
       # habits.dranidis.com is behind Cloudflare Access, which signs every request; the server
       # checks the signature against these, so it knows who is asking. Neither is secret.
       ACCESS_TEAM_DOMAIN: dranidis.cloudflareaccess.com

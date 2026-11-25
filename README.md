@@ -35,9 +35,9 @@ The server only listens on `127.0.0.1`. To open it from your phone or another co
 
 ### Deploying to the home server
 
-Deployed with [Komodo](https://komo.do) on `kubi-server` (UI at http://192.168.0.2:9120). The `habits` stack clones this repo, builds the image from `Dockerfile` and runs `deploy/compose.yaml`. The app is at https://habits.dranidis.com, behind Cloudflare Access: anyone can sign in (Google or an emailed code), and the server checks Access's signed login on every request (`server/auth.ts`) to know who is asking. Its port is only open on the server itself, for the tunnel.
+Deployed with [Komodo](https://komo.do) on a home server reachable over SSH as `kubi-server` (an alias in `~/.ssh/config`). The `habits` stack clones this repo, builds the image from `Dockerfile` and runs `deploy/compose.yaml`. The app is at https://habits.dranidis.com, behind Cloudflare Access: anyone can sign in (Google or an emailed code), and the server checks Access's signed login on every request (`server/auth.ts`) to know who is asking. Its port is only open on the server itself, for the tunnel.
 
-`npm run deploy` pushes, then has Komodo redeploy (`deploy/trigger-komodo.sh` sends the push webhook from the server itself, since GitHub can't reach Komodo on the LAN). Or press **Deploy** on the stack in Komodo. Data stays in the `habits_habits-pgdata` volume across deploys.
+The stack needs `OWNER_EMAIL` set in its environment. `npm run deploy` pushes, then has Komodo redeploy (`deploy/trigger-komodo.sh` sends the push webhook from the server itself, since GitHub can't reach Komodo on the LAN). Or press **Deploy** on the stack in Komodo. Data stays in the `habits_habits-pgdata` volume across deploys.
 
 Backup on the server: `docker exec habits-db-1 pg_dump -U habits habits > habits-backup.sql`.
 
@@ -63,3 +63,7 @@ The service worker (`public/sw.js`) only runs in production builds, never under 
 - `src/lib/stats.ts`: streaks, "never miss twice", completion rates, perfect days. All the schedule-aware counting lives here.
 - `src/lib/sound.ts`: Web Audio plucks, no audio files
 - `src/components/`: `Gate` (signed in → tracker, or "waiting for approval"), `Tracker`, `People` (owner only), `Masthead`, `Today` (drag to reorder), `HabitRow` (row and editor), `AddHabit`, `ScheduleField` (the schedule picker both use), `RecentGrid`, `Stats`, `Heatmap`
+
+## License
+
+[MIT](LICENSE)

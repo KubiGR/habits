@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 # Habits: one image with the API and the built web app.
-# Build on the server: DOCKER_HOST=ssh://kubi@192.168.0.2 docker build -t habits:latest .
+# Build on the server: DOCKER_HOST=ssh://kubi-server docker build -t habits:latest .
 
 # Slim (glibc), not Alpine: the TypeScript compiler (tsgo) ships as a native glibc binary.
 FROM node:26-slim AS build
