@@ -3,7 +3,7 @@
 //   GET  /api/data    → their Data snapshot              (approved people only)
 //   POST /api/ops     → apply one Op to their habits     (approved people only)
 //   GET  /api/people  → everyone who signed in           (owner only)
-//   POST /api/people  → approve or block someone         (owner only)
+//   POST /api/people  → block or restore access          (owner only)
 // With dist/ present (after `npm run build`) it also serves the app itself.
 
 import { readFile } from 'node:fs/promises'
@@ -18,9 +18,9 @@ const HOST = process.env.HOST ?? '127.0.0.1'
 const DIST = join(import.meta.dirname, '..', 'dist')
 const MAX_BODY = 64 * 1024
 
-/** Approves everyone else. Habits from before there were people belong to them. */
+/** Manages account access. Habits from before there were people belong to them. */
 const OWNER = process.env.OWNER_EMAIL?.trim().toLowerCase()
-if (!OWNER) throw new Error('Set OWNER_EMAIL: the person who approves everyone else.')
+if (!OWNER) throw new Error('Set OWNER_EMAIL: the person who manages account access.')
 
 // The schema re-runs on every start, so its "already exists, skipping" notices are noise.
 const sql = postgres(process.env.DATABASE_URL ?? 'postgres://habits:habits@127.0.0.1:5436/habits', { onnotice: () => {} })
@@ -88,7 +88,7 @@ async function write(owner: string, op: Op) {
   }
 }
 
-/** The signed-in person; the first request from someone new adds them as pending. */
+/** The signed-in person; the first request from someone new creates their account. */
 async function me(req: IncomingMessage): Promise<Me> {
   const email = await signedInEmail(req)
   // Our own 401 only happens when a request skipped Cloudflare Access; the app reloads to sign in.
@@ -97,17 +97,14 @@ async function me(req: IncomingMessage): Promise<Me> {
   if (!user) {
     await sql`insert into users (email) values (${email}) on conflict (email) do nothing`
     ;[user] = await sql<{ status: Status }[]>`select status from users where email = ${email}`
-    console.log(`New sign-up waiting for approval: ${email}`)
   }
-  const admin = email === OWNER
-  const waiting = admin ? (await sql`select count(*)::int as n from users where status = 'pending'`)[0].n : 0
-  return { email, status: user.status, admin, waiting }
+  return { email, status: user.status, admin: email === OWNER }
 }
 
 async function approved(req: IncomingMessage) {
   const m = await me(req)
   // 409, not 403: the app treats 401/403 as "signed out" (that's what Access sends) and reloads.
-  if (m.status !== 'approved') throw new HttpError(409, 'Waiting for approval')
+  if (m.status !== 'approved') throw new HttpError(409, 'Account access is blocked')
   return m
 }
 
@@ -115,7 +112,7 @@ async function people(): Promise<Person[]> {
   const rows = await sql<{ email: string; status: Status; created_at: Date; habits: number }[]>`
     select u.email, u.status, u.created_at, count(h.id)::int as habits
     from users u left join habits h on h.owner = u.email
-    group by u.email order by u.status = 'pending' desc, u.created_at desc`
+    group by u.email order by u.created_at desc`
   return rows.map((r) => ({ email: r.email, status: r.status, createdAt: r.created_at.toISOString(), habits: r.habits }))
 }
 

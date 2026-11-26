@@ -11,12 +11,10 @@ const TITLE: Partial<Record<Route, string>> = { stats: 'Stats', people: 'People'
 interface Props {
   today: string
   route: Route
-  /** The owner gets a People tab, with how many are waiting. */
   admin: boolean
-  waiting: number
 }
 
-export function Masthead({ today, route, admin, waiting }: Props) {
+export function Masthead({ today, route, admin }: Props) {
   const d = fromKey(today)
   return (
     <header className="masthead">
@@ -36,10 +34,8 @@ export function Masthead({ today, route, admin, waiting }: Props) {
             href="#/people"
             className={cls(route === 'people' && 'active')}
             aria-current={route === 'people' ? 'page' : undefined}
-            aria-label={waiting ? `People, ${waiting} waiting` : undefined}
           >
             People
-            {waiting > 0 && <span className="badge">{waiting}</span>}
           </a>
         )}
       </nav>

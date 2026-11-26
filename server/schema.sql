@@ -21,13 +21,16 @@ alter table habits add column if not exists schedule jsonb not null default '{"k
 -- Time of day was tried and removed.
 alter table habits drop column if exists time_of_day;
 
--- Everyone who has signed in. Only the owner (OWNER_EMAIL) approves people; nobody sees or saves
--- anything before that.
+-- Everyone who has signed in. New accounts can use the tracker immediately.
 create table if not exists users (
   email text primary key,
-  status text not null default 'pending' check (status in ('pending', 'approved', 'blocked')),
+  status text not null default 'approved' check (status in ('pending', 'approved', 'blocked')),
   created_at timestamptz not null default now()
 );
+
+-- Open sign-ups for existing deployments and grant access to people who were waiting.
+alter table users alter column status set default 'approved';
+update users set status = 'approved' where status = 'pending';
 
 -- Habits became per-person after launch. The server gives ownerless habits to the owner on start,
 -- then makes this column required.

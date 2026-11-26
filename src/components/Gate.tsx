@@ -3,7 +3,7 @@ import type { Me } from '../lib/data'
 import { account, httpBackend, SIGN_OUT } from '../lib/http'
 import { Tracker } from './Tracker'
 
-/** Finds out who is signed in. Only approved people get the tracker; everyone else waits here. */
+/** Finds out whether the signed-in person can use the tracker. */
 export function Gate() {
   const [me, setMe] = useState<Me | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -17,7 +17,7 @@ export function Gate() {
     }
   }, [])
 
-  // Checking again on return picks up an approval, and keeps the owner's waiting count fresh.
+  // Checking again on return picks up changes to account access.
   useEffect(() => {
     void check()
     const onShow = () => {
@@ -40,27 +40,14 @@ export function Gate() {
     )
   }
 
-  if (me.status === 'approved') return <Tracker backend={httpBackend} me={me} onPeopleChange={check} />
+  if (me.status === 'approved') return <Tracker backend={httpBackend} me={me} />
 
   return (
     <div className="loading gate">
-      {me.status === 'pending' ? (
-        <>
-          <h1 className="title">Almost there</h1>
-          <p>
-            You're signed in as <strong>{me.email}</strong>. Your account is waiting for approval; once it's approved,
-            this page opens your tracker.
-          </p>
-          <button onClick={() => void check()}>Check again</button>
-        </>
-      ) : (
-        <>
-          <h1 className="title">No access</h1>
-          <p>
-            <strong>{me.email}</strong> doesn't have access to this tracker.
-          </p>
-        </>
-      )}
+      <h1 className="title">No access</h1>
+      <p>
+        <strong>{me.email}</strong> doesn't have access to this tracker.
+      </p>
       <a href={SIGN_OUT}>Use a different account</a>
     </div>
   )

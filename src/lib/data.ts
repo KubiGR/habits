@@ -33,17 +33,15 @@ export type Op =
   /** Every habit id, in the new order; positions become their indexes. */
   | { type: 'reorder'; ids: string[] }
 
-/** Everyone who signs in starts as pending; the owner approves (or blocks) them. */
-export type Status = 'pending' | 'approved' | 'blocked'
+/** Everyone who signs in starts approved. The owner can block or restore access. */
+export type Status = 'approved' | 'blocked'
 
 /** GET /api/me */
 export interface Me {
   email: string
   status: Status
-  /** The owner, who approves people. */
+  /** The owner, who manages account access. */
   admin: boolean
-  /** For the owner: how many people are waiting. */
-  waiting: number
 }
 
 /** GET /api/people (owner only) */

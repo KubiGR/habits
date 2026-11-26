@@ -36,7 +36,7 @@ const json = { 'content-type': 'application/json' }
 /** Cloudflare Access's own sign-out page; it clears the login for this app. */
 export const SIGN_OUT = '/cdn-cgi/access/logout'
 
-/** Who is signed in, and approving other people. */
+/** Who is signed in, and managing account access. */
 export const account = {
   async me() {
     return (await (await request('/api/me')).json()) as Me
@@ -44,7 +44,7 @@ export const account = {
   async people() {
     return (await (await request('/api/people')).json()) as Person[]
   },
-  async setStatus(email: string, status: Exclude<Status, 'pending'>) {
+  async setStatus(email: string, status: Status) {
     await request('/api/people', { method: 'POST', headers: json, body: JSON.stringify({ email, status }) })
   },
 }

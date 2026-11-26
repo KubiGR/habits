@@ -4,10 +4,10 @@ import { account } from '../lib/http'
 
 const joinedFmt = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
 
-const STATUS_LABEL: Record<Status, string> = { pending: 'Waiting', approved: 'Approved', blocked: 'Blocked' }
+const STATUS_LABEL: Record<Status, string> = { approved: 'Active', blocked: 'Blocked' }
 
-/** Owner only: everyone who has signed in, to approve or block. */
-export function People({ me, onChange }: { me: string; onChange: () => void }) {
+/** Owner only: manage access for everyone who has signed in. */
+export function People({ me }: { me: string }) {
   const [people, setPeople] = useState<Person[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
@@ -24,13 +24,12 @@ export function People({ me, onChange }: { me: string; onChange: () => void }) {
     void load()
   }, [load])
 
-  async function set(email: string, status: 'approved' | 'blocked') {
+  async function set(email: string, status: Status) {
     setBusy(email)
     setError(null)
     try {
       await account.setStatus(email, status)
       await load()
-      onChange()
     } catch (e) {
       setError(`Couldn't update ${email}: ${e instanceof Error ? e.message : String(e)}`)
     } finally {
@@ -38,17 +37,13 @@ export function People({ me, onChange }: { me: string; onChange: () => void }) {
     }
   }
 
-  const waiting = people?.filter((p) => p.status === 'pending').length ?? 0
-
   return (
     <section className="people">
       <div className="section-head">
         <h2>People</h2>
-        {waiting > 0 && <span className="tally">{waiting} waiting</span>}
       </div>
       <p className="people-note">
-        Anyone can sign in at this address. They see nothing until you approve them, and each person only ever sees their
-        own habits.
+        Anyone can sign in and start tracking their own private habits.
       </p>
 
       {error && (
@@ -71,14 +66,13 @@ export function People({ me, onChange }: { me: string; onChange: () => void }) {
               </div>
               {p.email !== me && (
                 <div className="editor-actions">
-                  {p.status !== 'approved' && (
+                  {p.status === 'blocked' ? (
                     <button className="save" disabled={busy === p.email} onClick={() => void set(p.email, 'approved')}>
-                      Approve
+                      Restore access
                     </button>
-                  )}
-                  {p.status !== 'blocked' && (
+                  ) : (
                     <button disabled={busy === p.email} onClick={() => void set(p.email, 'blocked')}>
-                      {p.status === 'pending' ? 'Block' : 'Remove access'}
+                      Remove access
                     </button>
                   )}
                 </div>

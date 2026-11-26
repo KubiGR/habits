@@ -26,11 +26,9 @@ function readSoundPref() {
 interface Props {
   backend: Backend
   me: Me
-  /** After approving or blocking someone, so the waiting count updates. */
-  onPeopleChange: () => void
 }
 
-export function Tracker({ backend, me, onPeopleChange }: Props) {
+export function Tracker({ backend, me }: Props) {
   const today = useToday()
   const { data, error, dismissError, dispatch, reload } = useStore(backend)
   const [sound, setSound] = useState(readSoundPref)
@@ -98,9 +96,9 @@ export function Tracker({ backend, me, onPeopleChange }: Props) {
 
   return (
     <main className="page">
-      <Masthead today={today} route={route} admin={me.admin} waiting={me.waiting} />
+      <Masthead today={today} route={route} admin={me.admin} />
       {route === 'people' && me.admin ? (
-        <People me={me.email} onChange={onPeopleChange} />
+        <People me={me.email} />
       ) : route === 'stats' ? (
         <Stats habits={habits} checks={checks} today={today} />
       ) : (

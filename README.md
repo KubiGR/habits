@@ -9,7 +9,7 @@ A minimal habit tracker, inspired by the Atomic Habits tracker and the Theme Sys
 - **Stats** (tab at the top): check-ins, perfect days and longest perfect run, a year heatmap, and per habit its streak and best, completion over the last 30 days and all time, which weekdays you tend to do it, and its own heatmap.
 - **Last 25 days**: a rolling grid, like GitHub's activity graph. Every habit × every recent day, with a few empty days on the right so today isn't against the edge. Click any past day to fill it in late. Days where every habit was done get a dot. `←` `→` step a week at a time.
 - **Half checks**: for days you did part of a habit. On a phone, long-press. On a computer, Shift+click, right-click, the ½ button, or `Shift`+`1`–`9`. A half keeps the streak going (showing up counts) and adds ½ to the totals, but doesn't complete the day or count as a perfect day.
-- **People**: anyone can sign in at habits.dranidis.com, and each person has their own private habits. New sign-ups wait until the owner approves them in the **People** tab (owner only; a badge shows how many are waiting). The owner can also block someone or remove their access later; their habits are kept.
+- **People**: anyone can sign in at habits.dranidis.com and start tracking private habits immediately. The owner can remove or restore access in the **People** tab. Habits are kept when access is removed.
 - **Appearance**: Auto (follows the system), Light or Dark, set from the footer.
 - **Keys**: `1`–`9` check today's habits, `Shift`+`1`–`9` half, `←` `→` move the grid by a week.
 
@@ -27,7 +27,7 @@ Open http://localhost:5173. The API creates its tables on startup (`server/schem
 
 To run without Vite: `npm run build && npm start`, then open http://localhost:3001.
 
-Copy `.env.example` to `.env` first. In development there's no Cloudflare login, so `DEV_USER` says who you are; `OWNER_EMAIL` is the person who approves everyone else. Set `DEV_USER` to any other email to see the app as someone waiting for approval.
+Copy `.env.example` to `.env` first. In development, `DEV_USER` supplies the signed-in identity and `OWNER_EMAIL` identifies the owner. Use a different email for `DEV_USER` to try the app as a regular user.
 
 ### Using it from other devices
 
@@ -54,7 +54,7 @@ The service worker (`public/sw.js`) only runs in production builds, never under 
 
 ## Code map
 
-- `server/index.ts`: Node HTTP server (no framework, no build step). `GET /api/data` returns the signed-in person's habits, `POST /api/ops` applies one change to them, and `/api/me` and `/api/people` handle approval. Every query is scoped to the person asking.
+- `server/index.ts`: Node HTTP server (no framework, no build step). `GET /api/data` returns the signed-in person's habits, `POST /api/ops` applies one change to them, `/api/me` creates the account on first sign-in, and `/api/people` lets the owner manage access.
 - `server/auth.ts`: who is asking: verifies Cloudflare Access's signed login (`DEV_USER` in development)
 - `src/lib/data.ts`: data types and the `Op` change format, plus the `apply(data, op)` reducer used for optimistic updates
 - `src/lib/useStore.ts`: optimistic updates, writes sent one at a time in order, reload when the tab regains focus
@@ -62,7 +62,7 @@ The service worker (`public/sw.js`) only runs in production builds, never under 
 - `src/lib/schedule.ts`: schedules and their descriptions
 - `src/lib/stats.ts`: streaks, "never miss twice", completion rates, perfect days. All the schedule-aware counting lives here.
 - `src/lib/sound.ts`: Web Audio plucks, no audio files
-- `src/components/`: `Gate` (signed in → tracker, or "waiting for approval"), `Tracker`, `People` (owner only), `Masthead`, `Today` (drag to reorder), `HabitRow` (row and editor), `AddHabit`, `ScheduleField` (the schedule picker both use), `RecentGrid`, `Stats`, `Heatmap`
+- `src/components/`: `Gate` (tracker or blocked-account screen), `Tracker`, `People` (owner only), `Masthead`, `Today` (drag to reorder), `HabitRow` (row and editor), `AddHabit`, `ScheduleField` (the schedule picker both use), `RecentGrid`, `Stats`, `Heatmap`
 
 ## License
 
